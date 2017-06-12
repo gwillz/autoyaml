@@ -1,0 +1,59 @@
+stages:
+ - pre-build
+ - test
+ - build
+ - deploy
+
+requirements:
+ stage: pre-build
+ tags:
+ - python3
+ - linux
+ script:
+ - python3 -m pip install -r requirements.txt --user
+
+pypi:
+ stage: build
+ only:
+ - master
+ artifacts:
+  paths:
+  - dist/
+ tags:
+ - python3
+ - linux
+ script:
+ - python3 setup.py bdist_wheel --universal
+
+lint:
+ stage: test
+ tags:
+ - python3
+ - linux
+ script:
+ - wget https://git.mk2es.com.au/snippets/8/raw -O mk2pylint.cfg -q
+ - python3 -m pylint --rcfile=mk2pylint.cfg autoyaml --reports=no || [[ $(($? & 3)) == 0 ]]
+
+units:
+ stage: test
+ tags:
+ - python3
+ - linux
+ script:
+ - python3 -Bm coverage run --source=autoyaml -m unittest tests/*.py
+ - python3 -Bm coverage report -m
+
+deploy:
+ stage: deploy
+ allow_failure: true
+ dependencies:
+ - epydoc
+ - pypi
+ only:
+ - master
+ tags:
+ - linux
+ - mk2-docs
+ script:
+ - '[ -e /srv/pypi/packages/autoyaml ] || mkdir /srv/pypi/packages/autoyaml'
+ - cp dist/*.whl /srv/pypi/packages/autoyaml
