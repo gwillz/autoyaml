@@ -11,6 +11,9 @@ def create(path, default):
 def verify(cfg, default):
     "Test `cfg` for missing keys against default"
     
+    if cfg is None:
+        return
+    
     # test and report missing keys
     key_diff = set(default.keys()).difference(set(cfg.keys()))
     if len(key_diff) > 0:
