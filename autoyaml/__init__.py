@@ -8,11 +8,14 @@ def create(path, default):
         f.write(yaml.dump(default, default_flow_style=False))
 
 
-def verify(cfg, default):
+def verify(cfg, default, name="root"):
     "Test `cfg` for missing keys against default"
     
-    if cfg is None:
-        return
+    if not isinstance(cfg, dict):
+        if isinstance(default, dict):
+            raise KeyError("Missing nested config: {}".format(name))
+        else:
+            return
     
     # test and report missing keys
     key_diff = set(default.keys()).difference(set(cfg.keys()))
@@ -20,13 +23,8 @@ def verify(cfg, default):
         raise KeyError("Missing config keys: {}".format(", ".join(key_diff)))
     
     # test sub-dicts
-    try:
-        for k in default:
-            if isinstance(default[k], dict):
-                verify(cfg[k], default[k])
-    except KeyError as e:
-        e.args = ("Missing config key: {}".format(k),)
-        raise e
+    for k in default:
+        verify(cfg[k], default[k], k)
 
 
 def load(path, default):
@@ -35,7 +33,7 @@ def load(path, default):
     with open(path) as f:
         cfg = yaml.load(f)
         
-        if cfg is None:
+        if not isinstance(cfg, dict):
             raise KeyError("Config file empty, you should delete \"{}\" and try again".format(path))
         
         verify(cfg, default)
@@ -50,13 +48,14 @@ class Config(object):
         self._config = {}
         self._default = default_config
         self._path = config_path
+        self._additional = 0
     
     
     def load_or_create(self):
         "Load or create config if not found"
         for _ in range(2):
             try:
-                if len(self._config) == 0:
+                if len(self._config) == self._additional:
                     self._config.update(load(self._path, self._default))
                     break
             except FileNotFoundError:
@@ -73,6 +72,7 @@ class Config(object):
     def add(self, **kwargs):
         "Add extra configs"
         self._config.update(kwargs)
+        self._additional += 1
         return self
     
     @staticmethod

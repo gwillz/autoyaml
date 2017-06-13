@@ -30,5 +30,5 @@ class PropAttr(object):
         return "{} => {}".format(self._name, ", ".join(sorted(self._props.keys())))
     __unicode__ = __str__
     
-    def __repr__(self):
+    def __repr__(self): # pragma: no cover
         return repr(self._props)

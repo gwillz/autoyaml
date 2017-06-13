@@ -47,7 +47,6 @@ class PropAttr_test(unittest.TestCase):
         self.assertEqual(config.nested.nest_again.hello, "world")
 
 
-
 class PropAttr_helpers_test(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(CONFIG_PATH):
@@ -79,6 +78,17 @@ class PropAttr_helpers_test(unittest.TestCase):
         
         self.assertRaises(KeyError, actual)
     
+    def test_verify_bad_nested(self):
+        expected = {
+            "one": None,
+            "two": 2,
+            "nested": 'lol'
+        }
+        def actual():
+            verify(expected, CONFIG_DEFAULTS)
+        
+        self.assertRaises(KeyError, actual)
+    
     def test_bad_load(self):
         with open(CONFIG_PATH, 'w') as f:
             f.write("")
@@ -93,5 +103,13 @@ class PropAttr_helpers_test(unittest.TestCase):
         
         self.assertTrue(os.path.exists(CONFIG_PATH))
         self.assertEqual(load(CONFIG_PATH, CONFIG_DEFAULTS), ALT_CONFIG)
+    
+    def test_config_add(self):
+        actual = Config(CONFIG_PATH, CONFIG_DEFAULTS).add(added='this').load_or_create()
+        expected = ['one', 'two', 'nested', 'added']
+        
+        self.assertTrue(sum(k in actual._config for k in expected) == len(expected))
+        self.assertEqual(actual._config['added'], 'this')
+        
     
     
