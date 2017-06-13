@@ -1,5 +1,5 @@
 import unittest, types, os, sys
-from autoyaml import Config, create, verify, load
+from autoyaml._config import Config, create, verify, load
 
 CONFIG_PATH = os.sep.join([os.getenv("HOME"), ".autoyaml.yml"])
 CONFIG_DEFAULTS = {
@@ -28,11 +28,11 @@ ALT_CONFIG = {
 class PropAttr_test(unittest.TestCase):
     def setUp(self):
         class config(types.ModuleType):
-            from autoyaml import Config
+            import autoyaml
             
             PATH = CONFIG_PATH
             DEFAULTS = CONFIG_DEFAULTS
-            Config.load_hijack('config', PATH, DEFAULTS)
+            autoyaml.load_hijack('config', PATH, DEFAULTS)
     
     def tearDown(self):
         os.remove(CONFIG_PATH)

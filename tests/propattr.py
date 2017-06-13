@@ -1,6 +1,5 @@
 import unittest
-from autoyaml import PropAttr
-from autoyaml.propattr import validate_key, validate_all
+from autoyaml._propattr import PropAttr, validate_key, validate_all
 
 class PropAttr_test(unittest.TestCase):
     def setUp(self):
