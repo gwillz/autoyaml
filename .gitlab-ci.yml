@@ -47,7 +47,6 @@ deploy:
  stage: deploy
  allow_failure: true
  dependencies:
- - epydoc
  - pypi
  only:
  - master
