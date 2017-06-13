@@ -1,3 +1,4 @@
+
 class PropAttr(object):
     "Recursively convert dictionaries, so [attr] becomes .attr"
     
@@ -10,7 +11,9 @@ class PropAttr(object):
                 self._props[k] = PropAttr(props[k], k)
     
     def __getattr__(self, item):
+        "Get config by key"
         return self._props[item]
+    __getitem__ = __getattr__
     
     def __str__(self):
         return "Config: {} => {}".format(self._name, ", ".join(self._props.keys()))

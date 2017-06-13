@@ -47,9 +47,11 @@ class Config(object):
             try:
                 if len(self._config) == 0:
                     self._config.update(load(self._path))
-                    return self
+                    break
             except FileNotFoundError:
                 create(self._path, self._default)
+        
+        return self
     
     
     def hijack(self, module_name):

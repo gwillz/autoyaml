@@ -7,9 +7,9 @@ AutoYAML
 A thing that neatly loads config files as nested modules. No dicts or nothing.
 
 - creates the default config file if needed
-- throws `IOError`s on variations from the default config
+- throws `IOError` on variations from the default config
 - hides away ugly dicts and excessive configuration
-
+- read-only access to config properties
 
 ## Usage
 
@@ -32,10 +32,7 @@ Config.load_hijack(__name__, PATH, DEFAULTS)
 
 # OR
 
-Config(PATH, DEFAULTS)\
-.load_or_create()\
-.add(extra=(1+3))\
-.hijack(__name__)
+Config(PATH, DEFAULTS).load_or_create().add(extra=(1+3)).hijack(__name__)
 # the .add() call is useful for inserting configs that are dynamic
 ```
 
