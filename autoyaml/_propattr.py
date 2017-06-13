@@ -9,6 +9,7 @@ def validate_key(key):
     elif re.match(r'.*[^a-zA-Z_].*', key):
         raise KeyError("Invalid key '{}', only accepts [a-zA-Z_]".format(key))
 
+
 def validate_all(cfg):
     "validate all keys in cfg, matching [a-zA-Z_]"
     
@@ -16,6 +17,7 @@ def validate_all(cfg):
         validate_key(k)
         if isinstance(cfg[k], dict):
             validate_all(cfg[k])
+
 
 class PropAttr(object):
     "Recursively convert dictionaries, so [attr] becomes .attr"
@@ -35,9 +37,16 @@ class PropAttr(object):
         return self._props[item]
     __getitem__ = __getattr__
     
+    def __iter__(self):
+        for k in self._props:
+            yield k, self._props[k]
+    
+    def __eq__(self, other):
+        return self._props == other._props
+    
     def __str__(self):
         return "{} => {}".format(self._name, ", ".join(sorted(self._props.keys())))
     __unicode__ = __str__
     
     def __repr__(self): # pragma: no cover
-        return repr(self._props)
+        return "<PropAttr: {}>".format(str(self))

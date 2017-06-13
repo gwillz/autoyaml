@@ -29,6 +29,16 @@ class PropAttr_test(unittest.TestCase):
         self.assertEqual(str(self.config), "root => nested, one, two")
         self.assertEqual(str(self.config.nested), "nested => another, bool, nest_again")
         self.assertEqual(str(self.config.nested.nest_again), "nest_again => hello")
+    
+    def test_iter(self):
+        # print(self.config.nested)
+        
+        expected = {
+            "another": True,
+            "bool": False,
+            "nest_again": PropAttr({"hello": "world"}, "nest_again")
+        }
+        self.assertEqual(dict(self.config.nested), expected)
 
 class PropAttr_validate_test(unittest.TestCase):
     def test_key(self):
