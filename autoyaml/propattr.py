@@ -1,22 +1,31 @@
 import re
 
+def validate_key(key):
+    "Ensure a key can be used as an .attr - ie. matches [a-zA-Z_]"
+    
+    if not isinstance(key, str):
+        raise KeyError("Invalid key '{}', only accepts string types".format(key))
+    
+    elif re.match(r'.*[^a-zA-Z_].*', key):
+        raise KeyError("Invalid key '{}', only accepts [a-zA-Z_]".format(key))
+
+def validate_all(cfg):
+    "validate all keys in cfg, matching [a-zA-Z_]"
+    
+    for k in cfg:
+        validate_key(k)
+        if isinstance(cfg[k], dict):
+            validate_all(cfg[k])
+
 class PropAttr(object):
     "Recursively convert dictionaries, so [attr] becomes .attr"
-    
-    @staticmethod
-    def validate_key(key):
-        if not isinstance(key, str):
-            raise KeyError("Invalid key '{}', only accepts string types".format(key))
-        
-        elif re.match(r'.*[^a-zA-Z_].*', key):
-            raise KeyError("Invalid key '{}', only accepts [a-zA-Z_]".format(key))
     
     def __init__(self, props, name="root"):
         self._name = name
         self._props = props
         
         for k in props:
-            PropAttr.validate_key(k)
+            validate_key(k)
             
             if isinstance(props[k], dict):
                 self._props[k] = PropAttr(props[k], k)

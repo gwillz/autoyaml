@@ -4,10 +4,10 @@ AutoYAML
 ![build status](https://git.mk2es.com.au/gwillz/autoyaml/badges/master/build.svg)
 ![coverage report](https://git.mk2es.com.au/gwillz/autoyaml/badges/master/coverage.svg)
 
-A thing that neatly loads config files as nested modules. No dicts or nothing.
+A thing that neatly loads config files as nested modules.
 
 - creates the default config file if needed
-- throws `IOError` on variations from the default config
+- throws `KeyError` on variations from the default config
 - hides away ugly dicts and excessive configuration
 - read-only access to config properties
 

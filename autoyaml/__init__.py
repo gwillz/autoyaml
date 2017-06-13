@@ -1,8 +1,10 @@
 import sys, yaml
-from autoyaml.propattr import PropAttr
+from autoyaml.propattr import PropAttr, validate_all
 
 def create(path, default):
     "Write defaults to config"
+    
+    validate_all(default)
     
     with open(path, 'w') as f:
         f.write(yaml.dump(default, default_flow_style=False))

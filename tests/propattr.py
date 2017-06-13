@@ -1,5 +1,6 @@
 import unittest
 from autoyaml import PropAttr
+from autoyaml.propattr import validate_key, validate_all
 
 class PropAttr_test(unittest.TestCase):
     def setUp(self):
@@ -31,7 +32,21 @@ class PropAttr_test(unittest.TestCase):
         self.assertEqual(str(self.config.nested.nest_again), "nest_again => hello")
 
 class PropAttr_validate_test(unittest.TestCase):
-    def test(self):
-        self.assertRaises(KeyError, lambda: PropAttr.validate_key("bad key"))
-        self.assertRaises(KeyError, lambda: PropAttr.validate_key("123"))
-        self.assertRaises(KeyError, lambda: PropAttr.validate_key(5.5))
+    def test_key(self):
+        self.assertRaises(KeyError, lambda: validate_key("bad key"))
+        self.assertRaises(KeyError, lambda: validate_key("123"))
+        self.assertRaises(KeyError, lambda: validate_key(5.5))
+    
+    def test_all(self):
+        CONFIG = {
+            "one": 1,
+            "two": 2,
+            "nested": {
+                "another": True,
+                "bool": False,
+                "nest_again": {
+                    "hello": "world"
+                }
+            }
+        }
+        self.assertEqual(validate_all(CONFIG), None)
