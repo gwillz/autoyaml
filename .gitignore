@@ -1,0 +1,11 @@
+
+*.pyc
+*.egg-info
+*.bak
+build/
+dist/
+doc-style.css
+mk2pylint.cfg
+htmlcov/
+html/
+.coverage
