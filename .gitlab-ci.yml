@@ -40,7 +40,7 @@ units:
  - python3
  - linux
  script:
- - python3 -Bm coverage run --source=autoyaml -m unittest tests/*.py
+ - python3 -Bm coverage run --source=autoyaml --branch -m unittest tests/*.py
  - python3 -Bm coverage report -m
 
 deploy:
