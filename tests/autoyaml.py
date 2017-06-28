@@ -32,7 +32,12 @@ class PropAttr_test(unittest.TestCase):
             
             PATH = CONFIG_PATH
             DEFAULTS = CONFIG_DEFAULTS
-            autoyaml.load_hijack('config', PATH, DEFAULTS)
+            __name__ = "config"
+            __file__ = "mock/file.py"
+            __loader__ = 'mock_loader'
+            __package__ = "mock_package"
+            __spec__ = "mock_spec"
+            autoyaml.load_hijack(locals(), PATH, DEFAULTS)
     
     def tearDown(self):
         os.remove(CONFIG_PATH)

@@ -1,4 +1,4 @@
-import sys, yaml
+import sys, os, types, yaml
 from autoyaml._propattr import PropAttr, validate_all
 
 def create(path, default):
@@ -66,9 +66,9 @@ class Config(object):
         return self
     
     
-    def hijack(self, module_name):
+    def hijack(self, module):
         "Replace calling module with config"
-        sys.modules[module_name] = PropAttr(self._config)
+        sys.modules[module['__name__']] = ModuleProps(self._config, self._path, module)
     
     
     def add(self, **kwargs):
@@ -76,3 +76,21 @@ class Config(object):
         self._config.update(kwargs)
         self._additional += 1
         return self
+
+
+class ModuleProps(PropAttr, types.ModuleType):
+    def __init__(self, config, path, module):
+        self.__doc__ = "Config loaded from '{}'".format(path)
+        
+        self.__name__ = module['__name__']
+        self.__file__ = module['__file__']
+        self.__loader__ = module['__loader__']
+        self.__package__ = module['__package__']
+        self.__spec__ = module['__spec__']
+        try:
+            self.__path__ = module['__path__']
+        except KeyError:
+            self.__path__ = os.path.dirname(self.__file__)
+        
+        PropAttr.__init__(self, config)
+    
