@@ -1,4 +1,4 @@
-import sys, os, types, yaml
+import sys, os, types, yaml, copy
 from autoyaml._propattr import PropAttr, validate_all
 
 def create(path, default):
@@ -29,8 +29,8 @@ def verify(cfg, default, name="root"):
         verify(cfg[k], default[k], k)
 
 
-def load(path, default):
-    "Load from file, verify and return"
+def load(path):
+    "Load yaml config from file"
     
     with open(path) as f:
         cfg = yaml.load(f)
@@ -38,7 +38,6 @@ def load(path, default):
         if not isinstance(cfg, dict):
             raise KeyError("Config file empty, you should delete \"{}\" and try again".format(path))
         
-        verify(cfg, default)
         return cfg
 
 
@@ -46,23 +45,31 @@ def load(path, default):
 class Config(object):
     "Cache store of the config on import"
     
-    def __init__(self, config_path, default_config):
-        self._config = {}
+    def __init__(self, default_config):
+        self._config = copy.deepcopy(default_config)
         self._default = default_config
-        self._path = config_path
-        self._additional = 0
+        self._path = None
     
     
-    def load_or_create(self):
+    def load_or_create(self, config_path):
         "Load or create config if not found"
-        for _ in range(2):
-            try:
-                if len(self._config) == self._additional:
-                    self._config.update(load(self._path, self._default))
-                    break
-            except FileNotFoundError:
-                create(self._path, self._default)
         
+        if self._path:
+            return self
+        
+        try:
+            cfg = load(config_path)
+            verify(cfg, self._default)
+            self._config.update(cfg)
+            
+        except FileNotFoundError:
+            create(config_path, self._default)
+        
+        cfg = load(config_path)
+        verify(cfg, self._default)
+        self._config.update(cfg)
+        
+        self._path = config_path
         return self
     
     
@@ -74,7 +81,6 @@ class Config(object):
     def add(self, **kwargs):
         "Add extra configs"
         self._config.update(kwargs)
-        self._additional += 1
         return self
 
 
