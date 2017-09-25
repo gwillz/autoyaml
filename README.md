@@ -28,12 +28,19 @@ DEFAULTS = {
     'settings': True
 }
 
+# shorthand
 Config.load_hijack(__name__, PATH, DEFAULTS)
 
 # OR
 
-Config(PATH, DEFAULTS).load_or_create().add(extra=(1+3)).hijack(__name__)
 # the .add() call is useful for inserting configs that are dynamic
+Config(DEFAULTS).load_or_create(PATH).add(extra=(1+3)).hijack(globals())
+
+# OR
+
+# to not save/load a config file, useful for testing
+Config(DEFAULTS).hijack(globals())
+
 ```
 
 
@@ -46,4 +53,5 @@ config.something.etc # => 1234
 config.more          # => 'and more'
 config.settings      # => True
 config.extra         # => 4
+
 ```
