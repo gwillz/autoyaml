@@ -25,7 +25,7 @@ ALT_CONFIG = {
     }
 }
 
-class PropAttr_test(unittest.TestCase):
+class hijack_test(unittest.TestCase):
     def setUp(self):
         class config(types.ModuleType):
             import autoyaml
@@ -52,10 +52,11 @@ class PropAttr_test(unittest.TestCase):
         self.assertEqual(config.nested.nest_again.hello, "world")
 
 
-class PropAttr_helpers_test(unittest.TestCase):
+class Config_test(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(CONFIG_PATH):
             os.remove(CONFIG_PATH)
+    
     
     def test_verify(self):
         cfg = {
@@ -74,6 +75,7 @@ class PropAttr_helpers_test(unittest.TestCase):
         
         self.assertEqual(actual, expected)
     
+    
     def test_verify_missing(self):
         def actual():
             verify({
@@ -82,6 +84,7 @@ class PropAttr_helpers_test(unittest.TestCase):
             }, CONFIG_DEFAULTS)
         
         self.assertRaises(KeyError, actual)
+    
     
     def test_verify_bad_nested(self):
         expected = {
@@ -94,23 +97,16 @@ class PropAttr_helpers_test(unittest.TestCase):
         
         self.assertRaises(KeyError, actual)
     
-    def test_bad_load(self):
-        with open(CONFIG_PATH, 'w') as f:
-            f.write("")
-        
-        def actual():
-            load(CONFIG_PATH, CONFIG_DEFAULTS)
-        
-        self.assertRaises(KeyError, actual)
     
     def test_create_load(self):
         create(CONFIG_PATH, ALT_CONFIG)
         
         self.assertTrue(os.path.exists(CONFIG_PATH))
-        self.assertEqual(load(CONFIG_PATH, CONFIG_DEFAULTS), ALT_CONFIG)
+        self.assertEqual(load(CONFIG_PATH), ALT_CONFIG)
+    
     
     def test_config_add(self):
-        actual = Config(CONFIG_PATH, CONFIG_DEFAULTS).add(added='this').load_or_create()
+        actual = Config(CONFIG_DEFAULTS).add(added='this').load_or_create(CONFIG_PATH)
         expected = ['one', 'two', 'nested', 'added']
         
         self.assertTrue(sum(k in actual._config for k in expected) == len(expected))
