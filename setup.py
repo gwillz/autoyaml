@@ -13,7 +13,7 @@ def get_long_description(fname):
         return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(name='autoyaml',
-      version="0.3",
+      version="0.4",
       description="Auto loading/defaults for YAML config files",
       long_description=get_long_description('README.md'),
       author='Gwilyn Saunders',
