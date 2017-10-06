@@ -54,7 +54,9 @@ class PropAttr_validate_test(unittest.TestCase):
                 "another": True,
                 "bool": False,
                 "nest_again": {
-                    "hello": "world"
+                    "hello": "world",
+                    "v3": "123",
+                    "thing-thing": "thing",
                 }
             }
         }

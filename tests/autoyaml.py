@@ -9,7 +9,8 @@ CONFIG_DEFAULTS = {
         "another": True,
         "bool": False,
         "nest_again": {
-            "hello": "world"
+            "hello": "world",
+            "v3": True,
         }
     }
 }
@@ -20,7 +21,8 @@ ALT_CONFIG = {
         "another": 5,
         "bool": 5,
         "nest_again": {
-            "hello": 5
+            "hello": 5,
+            "v3": False,
         }
     }
 }
@@ -66,7 +68,8 @@ class Config_test(unittest.TestCase):
                 "another": True,
                 "bool": False,
                 "nest_again": {
-                    "hello": "world"
+                    "hello": "world",
+                    "v3": False,
                 }
             }
         }

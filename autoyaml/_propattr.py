@@ -6,8 +6,8 @@ def validate_key(key):
     if not isinstance(key, str):
         raise KeyError("Invalid key '{}', only accepts string types".format(key))
     
-    elif re.match(r'.*[^a-zA-Z_].*', key):
-        raise KeyError("Invalid key '{}', only accepts [a-zA-Z_]".format(key))
+    elif not re.match(r'^[^0-9\-_][a-zA-Z0-9\-_]+$', key):
+        raise KeyError("Invalid key '{}', only accepts alphanumeric and must not start with (0-9,-,_)".format(key))
 
 
 def validate_all(cfg):
